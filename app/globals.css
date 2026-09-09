@@ -200,9 +200,11 @@ body:has(.admin-page),body:has(.admin-login-page) { padding-bottom:0; }
 .admin-login-card>span { color:#777; font-size:8px; font-weight:800; letter-spacing:.22em; }
 .admin-login-card h1 { margin:0; font-size:42px; letter-spacing:-.055em; }
 .admin-login-card p { margin:-9px 0 5px; color:#888; font-size:11px; }
+.admin-login-form { display:grid; gap:16px; }
 .admin-login-card label { display:grid; gap:8px; color:#888; font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
 .admin-login-card input { width:100%; padding:14px 0; border:0; border-bottom:1px solid #3c3c3c; outline:0; background:transparent; color:#fff; font-size:14px; }
 .admin-login-card input:focus { border-color:#fff; }
+.admin-login-error { margin:-4px 0 0!important; color:#ff9c9c!important; font-size:10px!important; }
 .admin-login-card small { color:#ff9c9c; font-size:9px; }
 .admin-login-card button { padding:15px; border:0; background:#f3f1ec; color:#080808; font-size:9px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
 .admin-login-card>a { justify-self:start; color:#777; font-size:8px; letter-spacing:.08em; text-transform:uppercase; }

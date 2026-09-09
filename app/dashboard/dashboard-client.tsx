@@ -189,7 +189,7 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
       <section className="admin-content" id="overview">
         <header className="admin-topbar">
           <div><span className="eyebrow">Live store control</span><h1>{tabCopy[activeTab].title}</h1><p>{tabCopy[activeTab].description}</p></div>
-          <div className="admin-user"><span>OA</span><div><strong>{displayName}</strong><small>{loading ? "Syncing…" : "Store synced"} · <a href={signOutHref}>Sign out</a></small></div></div>
+          <div className="admin-user"><span>IM</span><div><strong>{displayName}</strong><small>{loading ? "Syncing…" : "Store synced"} · <a href={signOutHref}>Sign out</a></small></div></div>
         </header>
         <nav className="admin-tabbar" aria-label="Admin sections">
           <button className={activeTab === "products" ? "active" : ""} type="button" onClick={() => setActiveTab("products")}><span>Products</span><b>{products.length}</b></button>

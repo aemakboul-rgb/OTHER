@@ -1,12 +1,10 @@
-import { getChatGPTUser } from "@/app/chatgpt-auth";
+import { cookies } from "next/headers";
 
-const ADMIN_EMAIL_HASH = "13bbf22c60df279fe7b07e70ea108f80e79121818118e8877cf67cade1328222";
+export const ADMIN_COOKIE_NAME = "otherlife_admin";
+export const ADMIN_SESSION_VALUE = "imad";
 
 export async function getStoreAdmin() {
-  const user = await getChatGPTUser();
-  if (!user) return null;
-  const bytes = new TextEncoder().encode(user.email.trim().toLowerCase());
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
-  return hash === ADMIN_EMAIL_HASH ? user : null;
+  const cookieStore = await cookies();
+  if (cookieStore.get(ADMIN_COOKIE_NAME)?.value !== ADMIN_SESSION_VALUE) return null;
+  return { email: "imad@otherlife.local", displayName: "imad" };
 }
