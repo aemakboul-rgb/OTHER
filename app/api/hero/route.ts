@@ -1,9 +1,9 @@
-import { env } from "cloudflare:workers";
 import { getStoreAdmin } from "@/lib/server/admin-auth";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 
-const SETTINGS_KEY = "settings/hero.json";
 const DEFAULT_VIDEO_URL = "/video/otherlife-hero-2026.mp4";
-const CUSTOM_VIDEO_RESET_AT = Date.parse("2026-09-03T21:31:06Z");
+const settingsPath = path.join(process.cwd(), "data", "hero.json");
 const MAX_VIDEO_BYTES = 40 * 1024 * 1024;
 const VIDEO_EXTENSIONS: Record<string, string> = {
   "video/mp4": "mp4",
@@ -16,24 +16,17 @@ type HeroSettings = {
   updatedAt: string;
 };
 
+export const runtime = "nodejs";
+
 export async function GET() {
   try {
-    const saved = await env.BUCKET.get(SETTINGS_KEY);
-    if (!saved) {
-      return Response.json({ videoUrl: DEFAULT_VIDEO_URL, fileName: "Current campaign video", custom: false }, {
-        headers: { "cache-control": "no-store" },
-      });
-    }
-
-    const settings = JSON.parse(await saved.text()) as HeroSettings;
-    if (!settings.updatedAt || Date.parse(settings.updatedAt) <= CUSTOM_VIDEO_RESET_AT) {
-      return Response.json({ videoUrl: DEFAULT_VIDEO_URL, fileName: "Streetwear campaign video", custom: false }, {
-        headers: { "cache-control": "no-store" },
-      });
-    }
+    const settings = JSON.parse(await readFile(settingsPath, "utf8")) as HeroSettings;
     return Response.json({ ...settings, custom: true }, { headers: { "cache-control": "no-store" } });
-  } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "Could not load hero video" }, { status: 500 });
+  } catch {
+    return Response.json(
+      { videoUrl: DEFAULT_VIDEO_URL, fileName: "Current campaign video", custom: false },
+      { headers: { "cache-control": "no-store" } },
+    );
   }
 }
 
@@ -49,19 +42,19 @@ export async function POST(request: Request) {
     if (!extension) return Response.json({ error: "Use an MP4 or WebM video" }, { status: 415 });
     if (video.size > MAX_VIDEO_BYTES) return Response.json({ error: "Video must be smaller than 40 MB" }, { status: 413 });
 
-    const key = `hero/${crypto.randomUUID()}.${extension}`;
-    await env.BUCKET.put(key, video.stream(), {
-      httpMetadata: { contentType: video.type, cacheControl: "public, max-age=31536000, immutable" },
-    });
+    const fileName = `${crypto.randomUUID()}.${extension}`;
+    const videoUrl = `/uploads/hero/${fileName}`;
+    const targetPath = path.join(process.cwd(), "public", "uploads", "hero", fileName);
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await writeFile(targetPath, Buffer.from(await video.arrayBuffer()));
 
     const settings: HeroSettings = {
-      videoUrl: `/api/media?key=${encodeURIComponent(key)}`,
+      videoUrl,
       fileName: video.name,
       updatedAt: new Date().toISOString(),
     };
-    await env.BUCKET.put(SETTINGS_KEY, JSON.stringify(settings), {
-      httpMetadata: { contentType: "application/json", cacheControl: "no-store" },
-    });
+    await mkdir(path.dirname(settingsPath), { recursive: true });
+    await writeFile(settingsPath, `${JSON.stringify(settings, null, 2)}\n`, "utf8");
 
     return Response.json({ ...settings, custom: true }, { status: 201 });
   } catch (error) {
