@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://otherlife-store-preview.povend-dev.chatgpt.site"),
+  metadataBase: new URL("http://2.29.35.154:3001"),
   title: "OTHERLIFE — Beyond Ordinary",
   description: "Premium streetwear designed in Morocco. Beyond ordinary.",
   icons: {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "OTHERLIFE — Beyond Ordinary",
     description: "Premium streetwear designed in Morocco.",
-    url: "https://otherlife-store-preview.povend-dev.chatgpt.site",
+    url: "http://2.29.35.154:3001",
     siteName: "OTHERLIFE",
     images: [{ url: "/og.png", width: 1729, height: 910, alt: "OTHERLIFE — Beyond Ordinary" }],
     type: "website",

@@ -1,33 +1,9 @@
 import AnimatedBrandLogo from "@/components/animated-brand-logo";
-import { ADMIN_COOKIE_NAME, ADMIN_SESSION_VALUE, getStoreAdmin } from "@/lib/server/admin-auth";
-import { cookies } from "next/headers";
+import { getStoreAdmin } from "@/lib/server/admin-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import DashboardClient from "./dashboard-client";
 
 export const dynamic = "force-dynamic";
-
-async function loginAdmin(formData: FormData) {
-  "use server";
-
-  const username = String(formData.get("username") ?? "").trim();
-  const password = String(formData.get("password") ?? "").trim();
-
-  if (username !== "imad" || password !== "imad") {
-    redirect("/dashboard?error=1");
-  }
-
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE_NAME, ADMIN_SESSION_VALUE, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
-
-  redirect("/dashboard");
-}
 
 export default async function DashboardPage({
   searchParams,
@@ -47,7 +23,7 @@ export default async function DashboardPage({
           <span>OTHERLIFE CONTROL</span>
           <h1>Admin sign in</h1>
           <p>Manage products, stock, orders and storefront media.</p>
-          <form className="admin-login-form" action={loginAdmin}>
+          <form className="admin-login-form" action="/api/admin/login" method="post">
             <label>
               Username
               <input name="username" autoComplete="username" required />
