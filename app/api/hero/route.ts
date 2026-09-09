@@ -21,6 +21,10 @@ export const runtime = "nodejs";
 export async function GET() {
   try {
     const settings = JSON.parse(await readFile(settingsPath, "utf8")) as HeroSettings;
+    if (settings.videoUrl.startsWith("/uploads/")) {
+      const key = settings.videoUrl.replace("/uploads/", "");
+      settings.videoUrl = `/api/media?key=${encodeURIComponent(key)}`;
+    }
     return Response.json({ ...settings, custom: true }, { headers: { "cache-control": "no-store" } });
   } catch {
     return Response.json(
@@ -43,7 +47,8 @@ export async function POST(request: Request) {
     if (video.size > MAX_VIDEO_BYTES) return Response.json({ error: "Video must be smaller than 40 MB" }, { status: 413 });
 
     const fileName = `${crypto.randomUUID()}.${extension}`;
-    const videoUrl = `/uploads/hero/${fileName}`;
+    const key = `hero/${fileName}`;
+    const videoUrl = `/api/media?key=${encodeURIComponent(key)}`;
     const targetPath = path.join(process.cwd(), "public", "uploads", "hero", fileName);
     await mkdir(path.dirname(targetPath), { recursive: true });
     await writeFile(targetPath, Buffer.from(await video.arrayBuffer()));

@@ -24,7 +24,8 @@ export async function POST(request: Request) {
     if (image.size > MAX_IMAGE_BYTES) return Response.json({ error: "Image must be smaller than 8 MB" }, { status: 413 });
 
     const fileName = `${crypto.randomUUID()}.${extension}`;
-    const relativePath = `/uploads/products/${fileName}`;
+    const key = `products/${fileName}`;
+    const relativePath = `/api/media?key=${encodeURIComponent(key)}`;
     const targetPath = path.join(process.cwd(), "public", "uploads", "products", fileName);
     await mkdir(path.dirname(targetPath), { recursive: true });
     await writeFile(targetPath, Buffer.from(await image.arrayBuffer()));
