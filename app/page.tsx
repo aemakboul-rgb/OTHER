@@ -42,7 +42,6 @@ function StoreHeader({ cartCount, onHome, onBag, isLight, onTheme }: { cartCount
           </button>
           <nav className="desktop-nav" aria-label="Main navigation">
             <button type="button" onClick={onHome}>Shop</button>
-            <a href="/dashboard">Admin</a>
           </nav>
         </div>
         <button className="header-logo logo-button" type="button" onClick={onHome} aria-label="OTHERLIFE home">
@@ -277,7 +276,7 @@ export default function Home() {
           <span className="eyebrow">Order {confirmedOrderId} confirmed</span>
           <h1>Thank you.<br />Your order is in.</h1>
           <p>We’ll call you before delivery. Prepare <strong>{formatMAD(confirmedTotal)}</strong> in cash for the courier.</p>
-          <div className="confirmation-actions"><button type="button" onClick={goHome}>Back to store</button><a href="/dashboard">View in admin</a></div>
+          <div className="confirmation-actions"><button type="button" onClick={goHome}>Back to store</button></div>
         </section>
       </main>
     );

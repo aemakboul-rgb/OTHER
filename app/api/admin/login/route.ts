@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   const password = String(formData.get("password") ?? "").trim();
 
   if (username !== "imad" || password !== "imad") {
-    redirect("/dashboard?error=1");
+    redirect("/admin?error=1");
   }
 
   const cookieStore = await cookies();
@@ -20,5 +20,5 @@ export async function POST(request: Request) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  redirect("/dashboard");
+  redirect("/admin");
 }

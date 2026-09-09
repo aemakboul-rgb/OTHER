@@ -4,7 +4,7 @@ Next.js storefront and admin dashboard for OTHERLIFE.
 
 ## Admin
 
-Open `/dashboard` and sign in with:
+Open `/admin` and sign in with:
 
 ```text
 Username: imad
