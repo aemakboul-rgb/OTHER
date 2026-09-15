@@ -302,6 +302,8 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="mobile-marquee" aria-hidden="true"><div>OTHERLIFE&nbsp; ✦ &nbsp;BEYOND ORDINARY&nbsp; ✦ &nbsp;CASABLANCA&nbsp; ✦ &nbsp;OTHERLIFE&nbsp; ✦ &nbsp;BEYOND ORDINARY&nbsp; ✦ &nbsp;</div></div>
+
         <section className="shop-section" id="drop">
         <div className="category-tabs" role="tablist" aria-label="Filter products">
           {categories.map((category) => (
