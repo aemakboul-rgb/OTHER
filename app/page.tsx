@@ -53,7 +53,6 @@ function StoreHeader({ cartCount, onHome, onBag, isLight, onTheme }: { cartCount
           </button>
         </div>
       </div>
-      <div className="mobile-announcement"><span>Drop 001 live</span><b>•</b><span>COD Morocco</span><b>•</b><span>2–4 day delivery</span></div>
     </header>
   );
 }
@@ -286,31 +285,24 @@ export default function Home() {
     <main>
       <StoreHeader cartCount={cart.length} onHome={goHome} onBag={() => setCartOpen(true)} isLight={isLight} onTheme={toggleTheme} />
 
-      <section className="video-hero" id="top" aria-label="OTHERLIFE Drop 001 campaign">
+      <section className="video-hero" id="top" aria-label="OTHERLIFE campaign">
         <video key={heroVideoUrl} autoPlay muted loop playsInline preload="metadata" poster={heroVideoUrl === defaultHeroVideo ? "/video/otherlife-hero-2026-poster.png" : undefined}>
           <source src={heroVideoUrl} />
         </video>
         <div className="video-shade" />
-        <a className="video-cta" href="#drop">Shop Drop 001 <span>→</span></a>
+        <a className="video-cta" href="#drop">Shop now <span>→</span></a>
         <span className="video-label">OTHERLIFE · Casablanca</span>
       </section>
 
       <div className="store-content">
         <div className="desktop-drop-ticker" aria-hidden="true">
           <div className="desktop-drop-track">
-            <span>OTHERLIFE® ✦ DROP 001 ✦ CASABLANCA ✦ LIMITED RELEASE ✦ BEYOND ORDINARY ✦</span>
-            <span>OTHERLIFE® ✦ DROP 001 ✦ CASABLANCA ✦ LIMITED RELEASE ✦ BEYOND ORDINARY ✦</span>
+            <span>OTHERLIFE® ✦ CASABLANCA ✦ BEYOND ORDINARY ✦</span>
+            <span>OTHERLIFE® ✦ CASABLANCA ✦ BEYOND ORDINARY ✦</span>
           </div>
         </div>
 
-        <div className="mobile-marquee" aria-hidden="true"><div>OTHERLIFE&nbsp; ✦ &nbsp;BEYOND ORDINARY&nbsp; ✦ &nbsp;DROP 001&nbsp; ✦ &nbsp;OTHERLIFE&nbsp; ✦ &nbsp;BEYOND ORDINARY&nbsp; ✦ &nbsp;</div></div>
-
         <section className="shop-section" id="drop">
-          <div className="section-heading">
-            <div><span className="eyebrow">The first collection</span><h2>Drop 001</h2></div>
-            <p>{catalogProducts.length} limited pieces, designed in Morocco.</p>
-          </div>
-
         <div className="category-tabs" role="tablist" aria-label="Filter products">
           {categories.map((category) => (
             <button type="button" role="tab" aria-selected={activeCategory === category} className={activeCategory === category ? "active" : ""} key={category} onClick={() => setActiveCategory(category)}>
@@ -395,7 +387,7 @@ export default function Home() {
             </div>
             <div className="cart-items">
               {cartProducts.length === 0 ? (
-                <div className="empty-cart"><span>Your bag is empty.</span><button type="button" onClick={() => setCartOpen(false)}>Explore Drop 001</button></div>
+                <div className="empty-cart"><span>Your bag is empty.</span><button type="button" onClick={() => setCartOpen(false)}>Explore collection</button></div>
               ) : cartProducts.map((product, index) => (
                 <div className="cart-item" key={`${product.id}-${index}`}>
                   <Image src={product.image} alt="" width={92} height={92} unoptimized />
@@ -413,7 +405,7 @@ export default function Home() {
           </aside>
         </div>
       )}
-      <a className="whatsapp-float" href={whatsappHref("Salam OTHERLIFE, bghit n3ref aktar 3la Drop 001. Merci.")} target="_blank" rel="noreferrer" aria-label="Contact OTHERLIFE on WhatsApp"><WhatsAppIcon /><span>WhatsApp</span></a>
+      <a className="whatsapp-float" href={whatsappHref("Salam OTHERLIFE, bghit n3ref aktar 3la collection. Merci.")} target="_blank" rel="noreferrer" aria-label="Contact OTHERLIFE on WhatsApp"><WhatsAppIcon /><span>WhatsApp</span></a>
       <MobileDock
         cartCount={cart.length}
         onHome={goHome}
