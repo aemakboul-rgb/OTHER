@@ -10,6 +10,7 @@ type Inventory = Record<number, Record<string, number>>;
 
 const defaultInventory: Inventory = Object.fromEntries(fallbackProducts.map((product) => [product.id, product.initialStock]));
 const defaultHeroVideo = "/video/otherlife-hero-2026.mp4";
+const defaultStoryImage = "/images/products/otherlife-night-coach-jacket.webp";
 const whatsappNumber = "212777069946";
 
 function WhatsAppIcon() {
@@ -82,6 +83,7 @@ export default function Home() {
   const [orderError, setOrderError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [heroVideoUrl, setHeroVideoUrl] = useState(defaultHeroVideo);
+  const [storyImageUrl, setStoryImageUrl] = useState(defaultStoryImage);
 
   useEffect(() => {
     fetch("/api/products")
@@ -100,6 +102,15 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         if (typeof data.videoUrl === "string" && data.videoUrl) setHeroVideoUrl(data.videoUrl);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/story", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (typeof data.imageUrl === "string" && data.imageUrl) setStoryImageUrl(data.imageUrl);
       })
       .catch(() => undefined);
   }, []);
@@ -334,7 +345,7 @@ export default function Home() {
 
         <section className="story" id="story">
           <div className="story-image">
-            <Image src="/images/products/otherlife-night-coach-jacket.webp" alt="OTHERLIFE Night Transit Coach Jacket" fill sizes="(max-width: 800px) 100vw, 48vw" unoptimized />
+            <Image src={storyImageUrl} alt="OTHERLIFE campaign story" fill sizes="(max-width: 800px) 100vw, 48vw" unoptimized />
           </div>
           <div className="story-copy">
             <span className="eyebrow">Our point of view</span>

@@ -34,19 +34,25 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
   const [heroVideoUrl, setHeroVideoUrl] = useState("/video/otherlife-hero-2026.mp4");
   const [heroVideoName, setHeroVideoName] = useState("Current campaign video");
   const [uploadingHero, setUploadingHero] = useState(false);
+  const [storyImageUrl, setStoryImageUrl] = useState("/images/products/otherlife-night-coach-jacket.webp");
+  const [storyImageName, setStoryImageName] = useState("Current story image");
+  const [uploadingStory, setUploadingStory] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [productResponse, orderResponse, heroResponse] = await Promise.all([fetch("/api/products"), fetch("/api/orders"), fetch("/api/hero", { cache: "no-store" })]);
-      const [productData, orderData, heroData] = await Promise.all([productResponse.json(), orderResponse.json(), heroResponse.json()]);
+      const [productResponse, orderResponse, heroResponse, storyResponse] = await Promise.all([fetch("/api/products"), fetch("/api/orders"), fetch("/api/hero", { cache: "no-store" }), fetch("/api/story", { cache: "no-store" })]);
+      const [productData, orderData, heroData, storyData] = await Promise.all([productResponse.json(), orderResponse.json(), heroResponse.json(), storyResponse.json()]);
       if (!productResponse.ok) throw new Error(productData.error || "Could not load products");
       if (!orderResponse.ok) throw new Error(orderData.error || "Could not load orders");
       if (!heroResponse.ok) throw new Error(heroData.error || "Could not load hero video");
+      if (!storyResponse.ok) throw new Error(storyData.error || "Could not load story image");
       if (Array.isArray(productData.products)) setProducts(productData.products);
       if (Array.isArray(orderData.orders)) setOrders(orderData.orders);
       if (typeof heroData.videoUrl === "string") setHeroVideoUrl(heroData.videoUrl);
       if (typeof heroData.fileName === "string") setHeroVideoName(heroData.fileName);
+      if (typeof storyData.imageUrl === "string") setStoryImageUrl(storyData.imageUrl);
+      if (typeof storyData.fileName === "string") setStoryImageName(storyData.fileName);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not sync the store.");
     } finally {
@@ -70,7 +76,7 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
     overview: { title: "Overview", description: "Your store at a glance." },
     orders: { title: "Orders", description: "COD orders and fulfillment." },
     products: { title: "Products", description: "Create products, edit details and manage every size." },
-    media: { title: "Hero video", description: "Replace the storefront campaign video instantly." },
+    media: { title: "Media", description: "Replace the homepage video and story image instantly." },
   };
 
   const setStock = (productId: number, size: string, stock: number) => setProducts((current) => current.map((product) => product.id === productId ? { ...product, stock: { ...product.stock, [size]: Math.max(0, stock) } } : product));
@@ -134,8 +140,8 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
 
   const chooseHeroVideo = async (file?: File) => {
     if (!file) return;
-    if (!["video/mp4", "video/webm"].includes(file.type) || file.size > 40 * 1024 * 1024) {
-      setNotice("Choose an MP4 or WebM video under 40 MB.");
+    if (!["video/mp4", "video/webm"].includes(file.type)) {
+      setNotice("Choose an MP4 or WebM video.");
       return;
     }
 
@@ -152,6 +158,29 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
       setNotice(error instanceof Error ? error.message : "Could not upload hero video.");
     } finally {
       setUploadingHero(false);
+    }
+  };
+
+  const chooseStoryImage = async (file?: File) => {
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type)) {
+      setNotice("Choose a JPG, PNG, WebP or AVIF image.");
+      return;
+    }
+
+    setUploadingStory(true); setNotice("");
+    try {
+      const formData = new FormData(); formData.append("image", file);
+      const response = await fetch("/api/story", { method: "POST", body: formData });
+      const data = (await response.json()) as { imageUrl?: string; fileName?: string; error?: string };
+      if (!response.ok || !data.imageUrl) throw new Error(data.error || "Image upload failed");
+      setStoryImageUrl(data.imageUrl);
+      setStoryImageName(data.fileName || file.name);
+      setNotice("Story image published on the live storefront.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not upload story image.");
+    } finally {
+      setUploadingStory(false);
     }
   };
 
@@ -181,7 +210,7 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
           <button className={activeTab === "overview" ? "active" : ""} type="button" onClick={() => setActiveTab("overview")}>Overview</button>
           <button className={activeTab === "orders" ? "active" : ""} type="button" onClick={() => setActiveTab("orders")}>Orders <span>{orders.length}</span></button>
           <button className={activeTab === "products" ? "active" : ""} type="button" onClick={() => setActiveTab("products")}>Products <span>{products.length}</span></button>
-          <button className={activeTab === "media" ? "active" : ""} type="button" onClick={() => setActiveTab("media")}>Hero video</button>
+          <button className={activeTab === "media" ? "active" : ""} type="button" onClick={() => setActiveTab("media")}>Media</button>
         </nav>
         <div className="admin-sidebar-bottom"><Link href="/">← Open storefront</Link><span>OTHERLIFE · Morocco</span></div>
       </aside>
@@ -195,7 +224,7 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
           <button className={activeTab === "products" ? "active" : ""} type="button" onClick={() => setActiveTab("products")}><span>Products</span><b>{products.length}</b></button>
           <button className={activeTab === "orders" ? "active" : ""} type="button" onClick={() => setActiveTab("orders")}><span>Orders</span><b>{orders.length}</b></button>
           <button className={activeTab === "overview" ? "active" : ""} type="button" onClick={() => setActiveTab("overview")}><span>Overview</span></button>
-          <button className={activeTab === "media" ? "active" : ""} type="button" onClick={() => setActiveTab("media")}><span>Hero video</span></button>
+          <button className={activeTab === "media" ? "active" : ""} type="button" onClick={() => setActiveTab("media")}><span>Media</span></button>
         </nav>
         {notice && <div className="admin-notice" role="status">{notice}</div>}
 
@@ -235,9 +264,18 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
             <div className="hero-video-controls">
               <span className="eyebrow">Current video</span>
               <strong>{heroVideoName}</strong>
-              <p>For the cleanest desktop result, use MP4 in 16:9. Maximum size: 40 MB.</p>
+              <p>For the cleanest desktop result, use MP4 in 16:9.</p>
               <label className="hero-video-upload"><input type="file" accept="video/mp4,video/webm" disabled={uploadingHero} onChange={(event) => void chooseHeroVideo(event.target.files?.[0])} /><strong>{uploadingHero ? "Uploading & publishing…" : "Choose new video"}</strong><small>The new video goes live as soon as the upload finishes.</small></label>
               <Link className="hero-store-link" href="/" target="_blank">Open live storefront →</Link>
+            </div>
+          </div>
+          <div className="hero-video-editor story-media-editor">
+            <div className="hero-video-preview story-image-preview"><Image key={storyImageUrl} src={storyImageUrl} alt="Current story image" fill sizes="(max-width: 760px) 100vw, 55vw" unoptimized /></div>
+            <div className="hero-video-controls">
+              <span className="eyebrow">Story image</span>
+              <strong>{storyImageName}</strong>
+              <p>Replace the image shown below the product collection on the homepage.</p>
+              <label className="hero-video-upload"><input type="file" accept="image/png,image/jpeg,image/webp,image/avif" disabled={uploadingStory} onChange={(event) => void chooseStoryImage(event.target.files?.[0])} /><strong>{uploadingStory ? "Uploading & publishing…" : "Choose new image"}</strong><small>The new image goes live as soon as the upload finishes.</small></label>
             </div>
           </div>
         </section>}

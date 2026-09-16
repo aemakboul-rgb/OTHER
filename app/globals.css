@@ -263,6 +263,9 @@ body:has(.admin-page),body:has(.admin-login-page) { padding-bottom:0; }
 .hero-video-editor { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr); gap:24px; padding:24px; }
 .hero-video-preview { min-width:0; aspect-ratio:16/9; overflow:hidden; background:#080808; }
 .hero-video-preview video { width:100%; height:100%; display:block; object-fit:cover; }
+.story-media-editor { border-top:1px solid #ecece8; }
+.story-image-preview { position:relative; aspect-ratio:4/5; }
+.story-image-preview img { object-fit:cover; }
 .hero-video-controls { min-width:0; display:flex; flex-direction:column; align-items:flex-start; padding:8px 0; }
 .hero-video-controls>strong { max-width:100%; margin:12px 0 8px; overflow:hidden; font-size:14px; text-overflow:ellipsis; white-space:nowrap; }
 .hero-video-controls>p { margin:0 0 22px; color:#777; font-size:10px; line-height:1.6; }

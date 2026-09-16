@@ -18,7 +18,7 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   try {
     const key = new URL(request.url).searchParams.get("key") ?? "";
-    if ((!key.startsWith("products/") && !key.startsWith("hero/")) || key.includes("..")) {
+    if ((!key.startsWith("products/") && !key.startsWith("hero/") && !key.startsWith("story/")) || key.includes("..")) {
       return Response.json({ error: "Invalid media key" }, { status: 400 });
     }
 

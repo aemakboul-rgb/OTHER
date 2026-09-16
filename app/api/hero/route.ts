@@ -4,7 +4,6 @@ import path from "node:path";
 
 const DEFAULT_VIDEO_URL = "/video/otherlife-hero-2026.mp4";
 const settingsPath = path.join(process.cwd(), "data", "hero.json");
-const MAX_VIDEO_BYTES = 40 * 1024 * 1024;
 const VIDEO_EXTENSIONS: Record<string, string> = {
   "video/mp4": "mp4",
   "video/webm": "webm",
@@ -44,8 +43,6 @@ export async function POST(request: Request) {
 
     const extension = VIDEO_EXTENSIONS[video.type];
     if (!extension) return Response.json({ error: "Use an MP4 or WebM video" }, { status: 415 });
-    if (video.size > MAX_VIDEO_BYTES) return Response.json({ error: "Video must be smaller than 40 MB" }, { status: 413 });
-
     const fileName = `${crypto.randomUUID()}.${extension}`;
     const key = `hero/${fileName}`;
     const videoUrl = `/api/media?key=${encodeURIComponent(key)}`;
