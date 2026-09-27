@@ -140,8 +140,9 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
 
   const chooseHeroVideo = async (file?: File) => {
     if (!file) return;
-    if (!["video/mp4", "video/webm"].includes(file.type)) {
-      setNotice("Choose an MP4 or WebM video.");
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    if (!["video/mp4", "video/webm", "video/quicktime", "video/hevc", "video/h265"].includes(file.type) && !["mp4", "webm", "mov"].includes(extension ?? "")) {
+      setNotice("Choose an MP4, WebM or HEVC/MOV video.");
       return;
     }
 
@@ -264,8 +265,8 @@ export default function DashboardClient({ displayName, signOutHref }: { displayN
             <div className="hero-video-controls">
               <span className="eyebrow">Current video</span>
               <strong>{heroVideoName}</strong>
-              <p>For the cleanest desktop result, use MP4 in 16:9.</p>
-              <label className="hero-video-upload"><input type="file" accept="video/mp4,video/webm" disabled={uploadingHero} onChange={(event) => void chooseHeroVideo(event.target.files?.[0])} /><strong>{uploadingHero ? "Uploading & publishing…" : "Choose new video"}</strong><small>The new video goes live as soon as the upload finishes.</small></label>
+              <p>For the cleanest desktop result, use MP4 in 16:9. HEVC/MOV is also supported.</p>
+              <label className="hero-video-upload"><input type="file" accept="video/mp4,video/webm,video/quicktime,video/hevc,video/h265,.mov" disabled={uploadingHero} onChange={(event) => void chooseHeroVideo(event.target.files?.[0])} /><strong>{uploadingHero ? "Uploading & publishing…" : "Choose new video"}</strong><small>MP4, WebM or HEVC/MOV. The new video goes live when the upload finishes.</small></label>
               <Link className="hero-store-link" href="/" target="_blank">Open live storefront →</Link>
             </div>
           </div>

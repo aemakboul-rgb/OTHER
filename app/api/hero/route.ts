@@ -7,6 +7,9 @@ const settingsPath = path.join(process.cwd(), "data", "hero.json");
 const VIDEO_EXTENSIONS: Record<string, string> = {
   "video/mp4": "mp4",
   "video/webm": "webm",
+  "video/quicktime": "mov",
+  "video/hevc": "mov",
+  "video/h265": "mov",
 };
 
 type HeroSettings = {
@@ -41,8 +44,9 @@ export async function POST(request: Request) {
     const video = formData.get("video");
     if (!(video instanceof File)) return Response.json({ error: "Choose a video to upload" }, { status: 400 });
 
-    const extension = VIDEO_EXTENSIONS[video.type];
-    if (!extension) return Response.json({ error: "Use an MP4 or WebM video" }, { status: 415 });
+    const nameExtension = path.extname(video.name).slice(1).toLowerCase();
+    const extension = VIDEO_EXTENSIONS[video.type] ?? (["mp4", "webm", "mov"].includes(nameExtension) ? nameExtension : undefined);
+    if (!extension) return Response.json({ error: "Use an MP4, WebM or HEVC/MOV video" }, { status: 415 });
     const fileName = `${crypto.randomUUID()}.${extension}`;
     const key = `hero/${fileName}`;
     const videoUrl = `/api/media?key=${encodeURIComponent(key)}`;

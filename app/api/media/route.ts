@@ -11,6 +11,7 @@ const CONTENT_TYPES: Record<string, string> = {
   ".avif": "image/avif",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
+  ".mov": "video/quicktime",
 };
 
 export const runtime = "nodejs";
